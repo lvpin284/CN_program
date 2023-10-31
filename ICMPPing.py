@@ -13,6 +13,8 @@ import binascii
 ICMP_ECHO_REQUEST = 8 #ICMP type code for echo request messages
 ICMP_ECHO_REPLY = 0 #ICMP type code for echo reply messages
 
+ID = 0  # ID of icmp_header
+SEQUENCE = 0  # sequence of ping_request_msg
 
 def checksum(string): 
 	csum = 0
@@ -66,6 +68,12 @@ def doOnePing(destinationAddress, timeout):
 	
 def ping(host, timeout=1):
 	# 1. Look up hostname, resolving it to an IP address
+	destinationIp = socket.gethostbyname(host)
+	global ID
+	ID = os.getpid()
+	for i in range(0, 100):
+		global SEQUENCE
+        SEQUENCE = i
 	# 2. Call doOnePing function, approximately every second
 	# 3. Print out the returned delay
 	# 4. Continue this process until stopped	
