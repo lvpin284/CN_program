@@ -51,16 +51,26 @@ def receiveOnePing(icmpSocket, destinationAddress, ID, timeout):
 	pass # Remove/replace when function is complete
 	
 def sendOnePing(icmpSocket, destinationAddress, ID):
+	icmp_checksum = 0
 	# 1. Build ICMP header
+	icmp_header = struct.pack('!bbHHh', ICMP_ECHO_REQUEST, 0, icmp_checksum, ID, SEQUENCE)
+	time_send = struct.pack('!d', time.time())
 	# 2. Checksum ICMP packet using given function
+	icmp_checksum = checksum(icmp_header + time_send)
 	# 3. Insert checksum into packet
+	icmp_header = struct.pack('!bbHHh', ICMP_ECHO_REQUEST, 0, icmp_checksum, ID, SEQUENCE)
 	# 4. Send packet using socket
+	icmp_packet = icmp_header + time_send
+	icmpSocket.sendto(icmp_packet, (destinationAddress, 80))
 	# 5. Record time of sending
 	pass # Remove/replace when function is complete
 	
 def doOnePing(destinationAddress, timeout): 
 	# 1. Create ICMP socket
+	icmpName = socket.getprotobyname('icmp')
+	icmp_Socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmpName)
 	# 2. Call sendOnePing function
+	sendOnePing(icmp_Socket, destinationAddress, ID)
 	# 3. Call receiveOnePing function
 	# 4. Close ICMP socket
 	# 5. Return total network delay
