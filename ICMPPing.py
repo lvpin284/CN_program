@@ -40,11 +40,11 @@ def checksum(string):
 	answer = answer & 0xffff 
 	answer = answer >> 8 | (answer << 8 & 0xff00)
 
-	answer = socket.htons(answer)
+#	answer = socket.htons(answer)
 
 	return answer
 	
-def receiveOnePing(icmpSocket, destinationAddress, ID, timeout):
+def receiveOnePing(icmpSocket, ID, timeout):
 	# 1. Wait for the socket to receive a reply
 	timeBeginReceive = time.time()
 	whatReady = select.select([icmpSocket], [], [], timeout)
@@ -104,7 +104,7 @@ def doOnePing(destinationAddress, timeout):
 	return totalDelay
 	pass # Remove/replace when function is complete
 	
-def ping(host, timeout=1):
+def ping(host, count, timeout):
 	send = 0
 	lost = 0
 	receive = 0
@@ -115,37 +115,37 @@ def ping(host, timeout=1):
 	destinationIp = socket.gethostbyname(host)
 	global ID
 	ID = os.getpid()
-	for i in range(0, 100):
+	for i in range(0, count):
 		global SEQUENCE
-        SEQUENCE = i
-	# 2. Call doOnePing function, approximately every second
-	delay = doOnePing(destinationIp, timeout) * 1000
-	send += 1
-	if delay > 0:
-		receive += 1
-		if maxTime < delay:
-			maxTime = delay
-		if minTime > delay:
-			minTime = delay
-		sumTime += delay
-		# 3. Print out the returned delay
-		print("Receive from: " + str(destinationIp) + ", delay = " + str(int(delay)) + "ms")
-	else:
-		# 测量和报告包丢失，包括无法到达的目的地
-		lost += 1
-		print("Fail to connect. ", end="")
-		# 处理不同的ICMP错误码，如目的主机不可达、目的网络不可达
-		if delay == -11:
-			# type = 11, target unreachable
-			print("Target net/host/port/protocol is unreachable.")
-		elif delay == -3:
-			# type = 3, ttl overtime
-			print("Request overtime.")
+		SEQUENCE = i
+		# 2. Call doOnePing function, approximately every second
+		delay = doOnePing(destinationIp, timeout) * 1000
+		send += 1
+		if delay > 0:
+			receive += 1
+			if maxTime < delay:
+				maxTime = delay
+			if minTime > delay:
+				minTime = delay
+			sumTime += delay
+			# 3. Print out the returned delay
+			print("Receive from: " + str(destinationIp) + ", delay = " + str(int(delay)) + "ms")
 		else:
-			# otherwise, overtime
-			print("Request overtime.")
-	time.sleep(1)
-	# 4. Continue this process until stopped
+			# 测量和报告包丢失，包括无法到达的目的地
+			lost += 1
+			print("Fail to connect. ", end="")
+			# 处理不同的ICMP错误码，如目的主机不可达、目的网络不可达
+			if delay == -11:
+				# type = 11, target unreachable
+				print("Target net/host/port/protocol is unreachable.")
+			elif delay == -3:
+				# type = 3, ttl overtime
+				print("Request overtime.")
+			else:
+				# otherwise, overtime
+				print("Request overtime.")
+		time.sleep(1)
+		# 4. Continue this process until stopped
 	if receive != 0:
 		avgTime = sumTime / receive
 		recvRate = receive / send * 100.0
@@ -157,7 +157,7 @@ def ping(host, timeout=1):
 	else:
 		print("\nSend: {0}, success: {1}, lost: {2}, rate of success: 0.0%".format(send, receive, lost))
 
-	pass # Remove/replace when function is complete  
+	pass # Remove/replace when function is complete
 
 if __name__ == '__main__':
     while True:
