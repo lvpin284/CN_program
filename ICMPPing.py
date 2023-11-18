@@ -159,5 +159,19 @@ def ping(host, timeout=1):
 
 	pass # Remove/replace when function is complete  
 
+if __name__ == '__main__':
+    while True:
+        try:
+            # 将IP或主机名作为参数
+            hostName = input("Input ip/name of the host you want: ")
+            # 可配置测量计数，使用可选参数设置
+            count = int(input("How many times you want to detect: "))
+            # 可配置超时，使用可选参数设置
+            timeout = int(input("Input timeout: "))
+            ping(hostName, count, timeout)
+            break
+        except Exception as e:
+            print(e)
+            continue
 
-ping("lancaster.ac.uk")
+#ping("lancaster.ac.uk")
