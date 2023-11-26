@@ -40,8 +40,6 @@ def checksum(string):
 	answer = answer & 0xffff 
 	answer = answer >> 8 | (answer << 8 & 0xff00)
 
-#	answer = socket.htons(answer)
-
 	return answer
 	
 def receiveOnePing(icmpSocket, ID, timeout):
