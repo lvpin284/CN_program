@@ -14,10 +14,33 @@ def handleRequest(clientSocket):
     try:
         file = open(filePath + "./index.html", 'rb')
         print("File is found in proxy server.")
-
+        #responseMsg = file.readlines()
+        #for i in range(0, len(responseMsg)):
+           # clientSocket.sendall(responseMsg[i])
+        responseMsg = file.read()
+        clientSocket.sendall(responseMsg)
+        print("Send, done.")
     # if not exists, send req to get it
     except:
         print("File is not exist.\nSend request to server...")
+        try:
+            proxyClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            serverName = fileName.split(":")[0]
+            proxyClientSocket.connect((serverName, 80))
+            proxyClientSocket.sendall(recvData.encode("UTF-8"))
+            responseMsg = proxyClientSocket.recv(4069)
+            print("File is found in server.")
+            clientSocket.sendall(responseMsg)
+            print("Send, done.")
+            # cache
+            if not os.path.exists(filePath):
+                os.makedirs(filePath)
+            cache = open(filePath + "./index.html", 'w')
+            cache.writelines(responseMsg.decode("UTF-8").replace('\r\n', '\n'))
+            cache.close()
+            print("Cache, done.")
+        except:
+            print("Connect timeout.")
 
 
 def startProxy(port):
