@@ -3,21 +3,55 @@ import socket
 
 
 def handleRequest(clientSocket):
-    # recv data
+    # 接收客户端数据
     recvData = clientSocket.recv(1024).decode("UTF-8")
 
-    # find the fileName
+    # 提取文件名
     fileName = recvData.split()[1].split("//")[1].replace('/', '')
     print("fileName: " + fileName)
     filePath = "./" + fileName.split(":")[0].replace('.', '_')
-    # judge if the file named "fileName" if existed
+
+    # 判断文件是否存在
     try:
         file = open(filePath + "./index.html", 'rb')
         print("File is found in proxy server.")
-
-    # if not exists, send req to get it
-    except:
+        responseMsg = file.read()
+        clientSocket.sendall(responseMsg)
+        print("Send, done.")
+    except FileNotFoundError:
         print("File is not exist.\nSend request to server...")
+        try:
+            proxyClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            serverName = fileName.split(":")[0]
+            proxyClientSocket.connect((serverName, 80))
+            proxyClientSocket.sendall(recvData.encode("UTF-8"))
+
+            responseMsg = b''  # 初始化为字节串
+            while True:
+                try:
+                    data = proxyClientSocket.recv(4069)
+                    if not data:
+                        print("something\n")  # 在成功接收到数据时输出
+                        break
+                    responseMsg += data  # 连接字节串
+                except Exception as e:
+                    print("Exception occurred:", str(e))
+                    # 其他处理异常的代码
+
+            #responseMsg = proxyClientSocket.recv(4069)
+            print("File is found in server.")
+            clientSocket.sendall(responseMsg)
+            print("Send, done.")
+
+            # 缓存数据
+            if not os.path.exists(filePath):
+                os.makedirs(filePath)
+            cache = open(filePath + "./index.html", 'w')
+            cache.writelines(responseMsg.decode("UTF-8").replace('\r\n', '\n'))
+            cache.close()
+            print("Cache, done.")
+        except Exception as e:
+            print("Error during connection to server: ", e)
 
 
 def startProxy(port):
@@ -38,5 +72,13 @@ def startProxy(port):
 
 
 if __name__ == '__main__':
-    port = int(input("choose a port number over 1024:"))
+    while True:
+        try:
+            port = int(input("choose a port number over 1024:"))
+            if port <= 1024:
+                print("Please input an integer greater than 1024")
+                continue
+            break
+        except ValueError:
+            print("Please input a valid integer for the port number.")
     startProxy(port)
