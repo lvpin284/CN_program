@@ -1,4 +1,2 @@
 # CN_program
- This project contains my own **ICMPPing, Traceroute, WebServer, WebProxy**.
- 
- These are the courseworks of the "Computer Network" at **Beijing Jiaotong University**.
+The coursework of Network Application Development is split into a number of smaller tasks: **Task 1.1** ICMP Ping Client, **Task 1.2** Traceroute Client, **Task 2.1** Web Server and **Task 2.2** Web Proxy. Importantly, the tasks build upon each other; the work you do in Task 1.1 will be fundamental to Task 1.2, and similarly, the work completed in Task 2.1 will greatly assist you in Task 2.2.
