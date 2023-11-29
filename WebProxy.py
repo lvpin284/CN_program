@@ -1,7 +1,6 @@
 import os
 import socket
 
-
 def handleRequest(clientSocket):
     # 接收客户端数据
     recvData = clientSocket.recv(1024).decode("UTF-8")
@@ -46,7 +45,7 @@ def handleRequest(clientSocket):
             # 缓存数据
             if not os.path.exists(filePath):
                 os.makedirs(filePath)
-            cache = open(filePath + "./index.html", 'w')
+            cache = open(filePath + "./index.html", 'w', encoding='utf-8')
             cache.writelines(responseMsg.decode("UTF-8").replace('\r\n', '\n'))
             cache.close()
             print("Cache, done.")
