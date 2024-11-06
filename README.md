@@ -11,7 +11,7 @@ Requirements:
 5.Familiar with ICMP
 
 **Task 2-Traceroute**
-![image](https://github.com/user-attachments/assets/cbd17f5c-e630-4e0b-8f7e-4ad3f19440e0)
+![image](https://github.com/user-attachments/assets/c6a74842-5a6c-4e27-86fe-99e10b6912b2)
 1.The domain name or IP of the given URL
 2.Simulate command line output with code (Must be output line by line, in English, python console)
 3. Special processing of specific packets, such as *
