@@ -2,6 +2,7 @@
 In the third year of study in computer science. This is my personal assignment for computer network, which involves many technical points of network transmission.
 
 **Task 1-ping**
+
 ![image](https://github.com/user-attachments/assets/138407e8-e10e-4251-ae51-dc760e89de0c)
 
 Requirements:
@@ -12,6 +13,7 @@ Requirements:
 5.Familiar with ICMP
 
 **Task 2-Traceroute**
+
 ![image](https://github.com/user-attachments/assets/c6a74842-5a6c-4e27-86fe-99e10b6912b2)
 
 1.The domain name or IP of the given URL
